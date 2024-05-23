@@ -7,28 +7,26 @@ import close from "/icon-close.svg";
 import delete2 from "/icon-delete.svg";
 import avatar from "/image-avatar.png";
 import image1 from "/image-product-1.jpg";
+import image2 from "/image-product-2.jpg";
+import image3 from "/image-product-3.jpg";
+import image4 from "/image-product-4.jpg";
 import image1Thumbnail from "/image-product-1-thumbnail.jpg";
 import image2Thumbnail from "/image-product-2-thumbnail.jpg";
 import image3Thumbnail from "/image-product-3-thumbnail.jpg";
 import image4Thumbnail from "/image-product-4-thumbnail.jpg";
 import "./App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteitem, incrementByAmount } from "./counterSlice";
 
 function App() {
+  const count2 = useSelector((state) => state.counter.count2);
+  const dispatch = useDispatch();
   const [count, setCount] = useState(0);
-  const [count2, setCount2] = useState(0);
   const [images, setimages] = useState(false);
   const [korzinka, setkorzinka] = useState(false);
-
-  // function dataFromLocalStorage() {
-  //   return (
-  //     JSON.parse(localStorage.getItem("count")) || {
-  //       count: 0,
-  //     }
-  //   );
-  // }
-  // dataFromLocalStorage();
-
-  console.log(korzinka);
+  const [karusel, setkarusel] = useState(1);
+  console.log(count2);
+  // console.log(korzinka);
   return (
     <>
       <header>
@@ -78,14 +76,24 @@ function App() {
                             <div>
                               <p>Fall Limited Edition Sneakers</p>
                               <div>
-                              $125.00 x {count2} ${count2*125}.00
+                                $125.00 x {count2} ${count2 * 125}.00
                               </div>
                             </div>
-                            <button onClick={()=> setCount2(0)} className="pointer">
+                            <button
+                              onClick={() => dispatch(deleteitem())}
+                              className="pointer"
+                            >
                               <img src={delete2} alt="" />
                             </button>
                           </div>
-                          <button className="button flex jcc m-auto inline">Checkout</button>
+                          <button
+                            onClick={() => {
+                              dispatch(deleteitem()), alert("you are bought");
+                            }}
+                            className="button flex jcc m-auto inline"
+                          >
+                            Checkout
+                          </button>
                         </div>
                       )}
                     </div>
@@ -124,11 +132,44 @@ function App() {
                     alt=""
                   />
                   <div className="m-auto flex jcc gap-10 auto">
-                    <div className="div2">
+                    <div
+                      onClick={() => {
+                        karusel == 1
+                          ? setkarusel(karusel + 3)
+                          : setkarusel(karusel - 1);
+                      }}
+                      className="div2"
+                    >
                       <img src={previous} alt="" />
                     </div>
-                    <img className="auto img1" src={image1} alt="" />
-                    <div className="div2">
+                    {karusel == 1 ? (
+                      <img className="auto img1" src={image1} alt="" />
+                    ) : (
+                      ""
+                    )}
+                    {karusel == 2 ? (
+                      <img className="auto img1" src={image2} alt="" />
+                    ) : (
+                      ""
+                    )}
+                    {karusel == 3 ? (
+                      <img className="auto img1" src={image3} alt="" />
+                    ) : (
+                      ""
+                    )}
+                    {karusel == 4 ? (
+                      <img className="auto img1" src={image4} alt="" />
+                    ) : (
+                      ""
+                    )}
+                    <div
+                      onClick={() => {
+                        karusel == 4
+                          ? setkarusel(karusel - 3)
+                          : setkarusel(karusel + 1);
+                      }}
+                      className="div2"
+                    >
                       <img src={next} alt="" />
                     </div>
                   </div>
@@ -213,8 +254,8 @@ function App() {
             <div className="flex gap-10">
               <button
                 className="btn-2"
-                onClick={() => setCount(count - 1)}
-                disabled={count2 == 0 ? true : false}
+                onClick={() => setCount(() => count - 1)}
+                disabled={count == 0 ? true : false}
               >
                 -
               </button>
@@ -226,7 +267,7 @@ function App() {
             <button
               disabled={count == 0 ? true : false}
               onClick={() => {
-                setCount2(count + count2);
+                dispatch(incrementByAmount(count2 + count));
                 setCount(0);
               }}
               className="button"
